@@ -2,27 +2,30 @@
 // CODE THAT LOADS THE HVAC PARTS (FROM FIRESTORE)
 // -----------------------------
 
-var db = firebase.firestore();
+// Wait for DOM to be ready before initializing
+document.addEventListener('DOMContentLoaded', function() {
+	var db = firebase.firestore();
 
-db.collection("parts")
-	.limit(10)
-	.get()
-	.then((querySnapshot) => {
-		querySnapshot.forEach((doc) => {
-			const data = doc.data();
-			const partArray = [
-				doc.id,
-				data.imageURL,
-				data.Manufacturer,
-				data.Model,
-				data.Type,
-				data.Price,
-				data.Availability,
-				data.Orders,
-			];
-			drawDiv(partArray);
+	db.collection("parts")
+		.limit(10)
+		.get()
+		.then((querySnapshot) => {
+			querySnapshot.forEach((doc) => {
+				const data = doc.data();
+				const partArray = [
+					doc.id,
+					data.imageURL,
+					data.Manufacturer,
+					data.Model,
+					data.Type,
+					data.Price,
+					data.Availability,
+					data.Orders,
+				];
+				drawDiv(partArray);
+			});
 		});
-	});
+});
 
 function drawDiv(divData) {
 	if (divData == null) return null;
@@ -99,16 +102,21 @@ function postReviews(drawnpartNum) {
 		});
 }
 
-document
-	.getElementById("parts-content")
-	.addEventListener("click", function (event) {
-		if (event.target.classList.contains("part-ref")) {
-			const pn = event.target.textContent;
-			localStorage.setItem("part-index", pn);
-			console.log("the PN is " + localStorage.getItem("part-index"));
-			window.open("https://jsfiddle.net/acowan/tjg3ncw9/show", "_newtab");
-		}
-	});
+// Wait for DOM to be ready
+document.addEventListener('DOMContentLoaded', function() {
+	document
+		.getElementById("parts-content")
+		.addEventListener("click", function (event) {
+			if (event.target.classList.contains("part-ref")) {
+				const pn = event.target.textContent;
+				localStorage.setItem("part-index", pn);
+				console.log("the PN is " + localStorage.getItem("part-index"));
+				// TODO: Replace with actual part detail page when created
+				// window.open("part-detail.html", "_newtab");
+				alert("Part details for " + pn + " - Detail page coming soon!");
+			}
+		});
+});
 
 function displayStars(rating, elementId) {
 	const container = document.getElementById(elementId);
@@ -142,20 +150,14 @@ function displayStars(rating, elementId) {
 // AUTHENTICATION AND ACCOUNT MANAGEMENT CODE VIA FIREBASE AUTH SERVICE
 // -----------------------------
 
-document.getElementById('login-trigger').addEventListener('click', authUser);
-
 function authUser() {
 	handle_auth();
 }
-
-document.getElementById('register-link').addEventListener('click', onReg);
 
 function onReg() {
 	document.getElementById('loginForm').style.display = "none";
 	document.getElementById('registerForm').style.display = "block";
 }
-
-document.getElementById('forgotten-link').addEventListener('click', onForget);
 
 function onForget() {
 	document.getElementById('forgottenForm').style.display = "block";
@@ -190,9 +192,6 @@ function handle_auth() {
 	}
 }
 
-const loginForm = document.getElementById('loginForm');
-loginForm.addEventListener('submit', loginUser);
-
 function loginUser() {
 	console.log("attempting to login user");
 
@@ -206,9 +205,6 @@ function loginUser() {
 		alert(errorMessage);
 	});
 }
-
-const registerForm = document.getElementById('registerForm');
-registerForm.addEventListener('submit', registerUser);
 
 function registerUser() {
 	console.log("I'll try to register this user");
@@ -233,9 +229,6 @@ function registerUser() {
 	}
 }
 
-const forgottenForm = document.getElementById('forgottenForm');
-forgottenForm.addEventListener('submit', recoverPassword);
-
 function recoverPassword() {
 	email = document.getElementById("recovery_email").value;
 
@@ -251,32 +244,51 @@ function recoverPassword() {
 	});
 }
 
-const loginAgain = document.getElementById('loginAgain');
-loginAgain.addEventListener('click', fromForgot);
-
 function fromForgot() {
 	document.getElementById('after-reset').style.display = "none";
 	document.getElementById('login-content').style.display = "block";
 	document.getElementById('loginForm').style.display = "block";
 }
 
-firebase.auth().onAuthStateChanged(function (user) {
-	if (user) {
-		console.log("welcoming now..." + user.email);
-		document.getElementById("auth-text").innerHTML = "Log Out";
-		document.getElementById('login-content').style.display = "none";
-	} else {
-		console.log('No user is signed in');
-	}
-	console.log('end of onAuthState...');
+// Wait for DOM to be ready
+document.addEventListener('DOMContentLoaded', function() {
+	document.getElementById('login-trigger').addEventListener('click', authUser);
+	document.getElementById('register-link').addEventListener('click', onReg);
+	document.getElementById('forgotten-link').addEventListener('click', onForget);
+
+	const loginForm = document.getElementById('loginForm');
+	loginForm.addEventListener('submit', loginUser);
+
+	const registerForm = document.getElementById('registerForm');
+	registerForm.addEventListener('submit', registerUser);
+
+	const forgottenForm = document.getElementById('forgottenForm');
+	forgottenForm.addEventListener('submit', recoverPassword);
+
+	const loginAgain = document.getElementById('loginAgain');
+	loginAgain.addEventListener('click', fromForgot);
+
+	firebase.auth().onAuthStateChanged(function (user) {
+		if (user) {
+			console.log("welcoming now..." + user.email);
+			document.getElementById("auth-text").innerHTML = "Log Out";
+			document.getElementById('login-content').style.display = "none";
+		} else {
+			console.log('No user is signed in');
+		}
+		console.log('end of onAuthState...');
+	});
 });
 
 // -----------------------------
 // CODE THAT FILTERS THE PARTS
 // -----------------------------
 
-const goButton = document.getElementById('go-btn');
-goButton.addEventListener('click', filterParts);
+// Wait for DOM to be ready
+document.addEventListener('DOMContentLoaded', function() {
+	const goButton = document.getElementById('go-btn');
+	goButton.addEventListener('click', filterParts);
+});
 
 function filterParts() {
 	console.log('go!');
