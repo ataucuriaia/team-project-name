@@ -25,89 +25,92 @@ document.addEventListener('DOMContentLoaded', function() {
 				drawDiv(partArray);
 			});
 		});
-});
 
-function drawDiv(divData) {
-	if (divData == null) return null;
-	let partNum = divData[0].trim();
-	let imgURL = divData[1].trim();
-	let mfr = divData[2].trim();
-	let model = divData[3].trim();
-	let type = divData[4].trim();
-	let price = "$" + Number(divData[5]).toFixed(2);
-	let avail = divData[6].trim();
-	let orders = String(divData[7]).trim();
+	function drawDiv(divData) {
+		if (divData == null) return null;
+		let partNum = divData[0].trim();
+		let imgURL = divData[1].trim();
+		let mfr = divData[2].trim();
+		let model = divData[3].trim();
+		let type = divData[4].trim();
+		let price = "$" + Number(divData[5]).toFixed(2);
+		let avail = divData[6].trim();
+		let orders = String(divData[7]).trim();
 
-	var newPartsDiv = document.createElement("div");
-	newPartsDiv.className = "catalog-part";
-	newPartsDiv.setAttribute("mfr", mfr);
-	newPartsDiv.setAttribute("model", model);
+		var newPartsDiv = document.createElement("div");
+		newPartsDiv.className = "catalog-part";
+		newPartsDiv.setAttribute("mfr", mfr);
+		newPartsDiv.setAttribute("model", model);
 
-	var partImg = document.createElement("img");
-	partImg.setAttribute("src", "https://" + imgURL);
-	newPartsDiv.appendChild(partImg);
+		var partImg = document.createElement("img");
+		partImg.setAttribute("src", "https://" + imgURL);
+		newPartsDiv.appendChild(partImg);
 
-	var newOverlayDiv = document.createElement("div");
-	newOverlayDiv.className = "overlay";
+		var newOverlayDiv = document.createElement("div");
+		newOverlayDiv.className = "overlay";
 
-	var link = document.createElement("a");
-	link.className = "part-ref";
-	link.setAttribute("href", "#");
-	link.textContent = mfr + " #" + partNum;
+		var link = document.createElement("a");
+		link.className = "part-ref";
+		link.setAttribute("href", "#");
+		link.textContent = mfr + " #" + partNum;
 
-	var newOverlayDivP = document.createElement("p");
-	newOverlayDivP.appendChild(link);
-	newOverlayDivP.appendChild(document.createElement("br"));
-	newOverlayDivP.appendChild(document.createTextNode(orders + " Orders"));
-	newOverlayDivP.appendChild(document.createElement("br"));
-	newOverlayDivP.appendChild(document.createTextNode(price + " " + avail));
+		var newOverlayDivP = document.createElement("p");
+		newOverlayDivP.appendChild(link);
+		newOverlayDivP.appendChild(document.createElement("br"));
+		newOverlayDivP.appendChild(document.createTextNode(orders + " Orders"));
+		newOverlayDivP.appendChild(document.createElement("br"));
+		newOverlayDivP.appendChild(document.createTextNode(price + " " + avail));
 
-	var reviewContainer = document.createElement("span");
-	reviewContainer.id = "review-" + partNum;
+		var reviewContainer = document.createElement("span");
+		reviewContainer.id = "review-" + partNum;
 
-	newOverlayDiv.appendChild(newOverlayDivP);
-	newPartsDiv.appendChild(newOverlayDiv);
-	newOverlayDivP.appendChild(reviewContainer);
+		newOverlayDiv.appendChild(newOverlayDivP);
+		newPartsDiv.appendChild(newOverlayDiv);
+		newOverlayDivP.appendChild(reviewContainer);
 
-	document.getElementById("parts-content").appendChild(newPartsDiv);
-	postReviews(partNum);
-}
+		document.getElementById("parts-content").appendChild(newPartsDiv);
+		postReviews(partNum);
+	}
 
-function postReviews(drawnpartNum) {
-	let totalRating = 0;
-	let numReviews = 0;
+	function postReviews(drawnpartNum) {
+		let totalRating = 0;
+		let numReviews = 0;
 
-	var review_file_path = "/parts/" + drawnpartNum + "/reviews";
+		var review_file_path = "/parts/" + drawnpartNum + "/reviews";
 
-	return db
-		.collection(review_file_path)
-		.get()
-		.then((querySnapshot) => {
-			querySnapshot.forEach((doc) => {
-				totalRating += doc.data().rating;
-				numReviews++;
+		return db
+			.collection(review_file_path)
+			.get()
+			.then((querySnapshot) => {
+				querySnapshot.forEach((doc) => {
+					totalRating += doc.data().rating;
+					numReviews++;
+				});
+				return { totalRating, numReviews };
+			})
+			.then(({ totalRating, numReviews }) => {
+				if (numReviews > 0) {
+					const avgRating = totalRating / numReviews;
+					const roundedRating = Math.floor(avgRating);
+					reviewsTargetID = "review-" + drawnpartNum;
+					const reviewEl = document.getElementById(reviewsTargetID);
+					if (reviewEl) {
+						reviewEl.innerHTML = "<br>" + numReviews + " Reviews<br>";
+						displayStars(roundedRating, reviewsTargetID);
+					}
+				}
+			})
+			.catch((error) => {
+				console.error("Error fetching reviews:", error);
 			});
-			return { totalRating, numReviews };
-		})
-		.then(({ totalRating, numReviews }) => {
-			const avgRating = totalRating / numReviews;
-			const roundedRating = Math.floor(avgRating);
-			reviewsTargetID = "review-" + drawnpartNum;
-			const reviewEl = document.getElementById(reviewsTargetID);
-			reviewEl.innerHTML = "<br>" + numReviews + " Reviews<br>";
-			displayStars(roundedRating, reviewsTargetID);
-		})
-		.catch((error) => {
-			console.error("Error fetching reviews:", error);
-		});
-}
+	}
 
-// Wait for DOM to be ready
-document.addEventListener('DOMContentLoaded', function() {
+	// Event listener for part clicks
 	document
 		.getElementById("parts-content")
 		.addEventListener("click", function (event) {
 			if (event.target.classList.contains("part-ref")) {
+				event.preventDefault();
 				const pn = event.target.textContent;
 				localStorage.setItem("part-index", pn);
 				console.log("the PN is " + localStorage.getItem("part-index"));
