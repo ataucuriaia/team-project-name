@@ -338,3 +338,95 @@ function updateLoginStatus(user) {
 		statusText.style.color = "#dc3545";
 	}
 }
+
+// -----------------------------
+// CHATBOT CODE
+// -----------------------------
+
+// FAQ answers
+const faqAnswers = {
+	1: "You can search for parts using the filter options above. Select a Manufacturer, Model, or Type from the dropdown menus and click 'Go' to filter the results. You can also use the search box in the top navigation bar.",
+	2: "We offer a 30-day return policy on all unused parts in their original packaging. Please contact our support team if you need to initiate a return.",
+	3: "Standard shipping typically takes 3-5 business days. Express shipping options are available at checkout for faster delivery (1-2 business days).",
+	4: "Yes! We offer technical support for all our HVAC parts. You can contact our technical team through the 'Send my question to the team' option in this chat, or reach out via email.",
+	5: "To create an account, click on 'Log In' in the top right corner, then select 'Register'. Fill in your email and create a password to get started. Having an account allows you to track orders and save your preferences."
+};
+
+// Wait for DOM to be ready
+document.addEventListener('DOMContentLoaded', function() {
+	const chatbotButton = document.getElementById('chatbot-button');
+	const chatbotWindow = document.getElementById('chatbot-window');
+	const chatbotClose = document.getElementById('chatbot-close');
+	const chatbotMessages = document.getElementById('chatbot-messages');
+	const chatbotQuestions = document.getElementById('chatbot-questions');
+	const chatbotForm = document.getElementById('chatbot-form');
+	const submitQuestion = document.getElementById('submit-question');
+	const cancelQuestion = document.getElementById('cancel-question');
+	const userQuestionTextarea = document.getElementById('user-question');
+
+	// Toggle chatbot window
+	chatbotButton.addEventListener('click', function() {
+		chatbotWindow.style.display = chatbotWindow.style.display === 'block' ? 'none' : 'block';
+	});
+
+	// Close chatbot window
+	chatbotClose.addEventListener('click', function() {
+		chatbotWindow.style.display = 'none';
+	});
+
+	// Handle FAQ question clicks
+	const faqButtons = document.querySelectorAll('.faq-question');
+	faqButtons.forEach(button => {
+		button.addEventListener('click', function() {
+			const questionNum = this.getAttribute('data-question');
+			
+			if (questionNum === '6') {
+				// Show form for sending question to team
+				chatbotQuestions.style.display = 'none';
+				chatbotForm.style.display = 'block';
+			} else {
+				// Display FAQ answer
+				const questionText = this.textContent;
+				const answer = faqAnswers[questionNum];
+				
+				// Add user question to messages
+				addMessage(questionText, 'user');
+				
+				// Add bot answer to messages
+				setTimeout(function() {
+					addMessage(answer, 'bot');
+				}, 500);
+			}
+		});
+	});
+
+	// Submit question to team
+	submitQuestion.addEventListener('click', function() {
+		const question = userQuestionTextarea.value.trim();
+		if (question) {
+			addMessage(question, 'user');
+			setTimeout(function() {
+				addMessage("Thank you for your question! Our team has received it and will get back to you soon.", 'bot');
+				userQuestionTextarea.value = '';
+				chatbotForm.style.display = 'none';
+				chatbotQuestions.style.display = 'block';
+			}, 500);
+		}
+	});
+
+	// Cancel question form
+	cancelQuestion.addEventListener('click', function() {
+		userQuestionTextarea.value = '';
+		chatbotForm.style.display = 'none';
+		chatbotQuestions.style.display = 'block';
+	});
+
+	// Function to add messages to chat
+	function addMessage(text, sender) {
+		const messageDiv = document.createElement('div');
+		messageDiv.className = 'chat-message ' + sender;
+		messageDiv.textContent = text;
+		chatbotMessages.appendChild(messageDiv);
+		chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+	}
+});

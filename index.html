@@ -155,6 +155,33 @@
     <!-- Parts Display: The container will be populated dynamically by JS -->
     <div id="parts-content"></div>
 
+    <!-- Chatbot -->
+    <div id="chatbot-container">
+        <div id="chatbot-button">
+            <i class="fa fa-comments"></i>
+        </div>
+        <div id="chatbot-window">
+            <div id="chatbot-header">
+                <h3>Frequently Asked Questions</h3>
+                <button id="chatbot-close">&times;</button>
+            </div>
+            <div id="chatbot-messages"></div>
+            <div id="chatbot-questions">
+                <button class="faq-question" data-question="1">How do I search for parts?</button>
+                <button class="faq-question" data-question="2">What is your return policy?</button>
+                <button class="faq-question" data-question="3">How long does shipping take?</button>
+                <button class="faq-question" data-question="4">Do you offer technical support?</button>
+                <button class="faq-question" data-question="5">How do I create an account?</button>
+                <button class="faq-question" data-question="6">Send my question to the team</button>
+            </div>
+            <div id="chatbot-form" style="display: none;">
+                <textarea id="user-question" placeholder="Type your question here..."></textarea>
+                <button id="submit-question">Send to Team</button>
+                <button id="cancel-question">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Custom JavaScript -->
     <script src="script.js"></script>
 </body>
