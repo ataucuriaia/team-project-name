@@ -417,6 +417,8 @@ grid-area: 3 / 1 / 4 / 2;
 
 #chatbot-messages {
   flex: 1;
+  min-height: 0;
+  max-height: 300px;
   padding: 15px;
   overflow-y: auto;
   background-color: #f8f9fa;
@@ -451,8 +453,10 @@ grid-area: 3 / 1 / 4 / 2;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  max-height: 200px;
+  flex-shrink: 0;
+  max-height: 180px;
   overflow-y: auto;
+  background-color: #ffffff;
 }
 
 .faq-question {
@@ -478,6 +482,8 @@ grid-area: 3 / 1 / 4 / 2;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  flex-shrink: 0;
+  background-color: #ffffff;
 }
 
 #user-question {
