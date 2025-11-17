@@ -385,16 +385,18 @@ document.addEventListener('DOMContentLoaded', function() {
 				chatbotQuestions.style.display = 'none';
 				chatbotForm.style.display = 'block';
 			} else {
-				// Display FAQ answer
+				// Display FAQ answer - keep all previous messages visible
 				const questionText = this.textContent;
 				const answer = faqAnswers[questionNum];
 				
-				// Add user question to messages
+				// Add user question to messages (appends, doesn't replace)
 				addMessage(questionText, 'user');
 				
-				// Add bot answer to messages
+				// Add bot answer to messages (appends, doesn't replace)
 				setTimeout(function() {
 					addMessage(answer, 'bot');
+					// Scroll to bottom to show new message
+					chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
 				}, 500);
 			}
 		});
@@ -421,12 +423,15 @@ document.addEventListener('DOMContentLoaded', function() {
 		chatbotQuestions.style.display = 'block';
 	});
 
-	// Function to add messages to chat
+	// Function to add messages to chat (always appends, never replaces)
 	function addMessage(text, sender) {
 		const messageDiv = document.createElement('div');
 		messageDiv.className = 'chat-message ' + sender;
 		messageDiv.textContent = text;
 		chatbotMessages.appendChild(messageDiv);
-		chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+		// Scroll to bottom to show new message
+		setTimeout(function() {
+			chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+		}, 10);
 	}
 });
