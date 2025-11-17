@@ -114,6 +114,27 @@ body {
   margin: 5px;
  }
 
+#status-bar {
+	background-color: #f8f9fa;
+	font-family: Proxima Nova,helvetica neue,helvetica,sans-serif;
+	font-size: 90%;
+	padding: 10px;
+	margin: 10px 0;
+	border: 1px solid #dee2e6;
+	border-radius: 4px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+#item-count, #login-status {
+	font-weight: bold;
+	color: #002D45;
+}
+
+#login-status-text {
+	font-weight: normal;
+}
 
 #search-controls {
 	background-color: #ffffff;

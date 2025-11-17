@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				];
 				drawDiv(partArray);
 			});
+			updateItemCount();
 		});
 
 	function drawDiv(divData) {
@@ -279,6 +280,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		} else {
 			console.log('No user is signed in');
 		}
+		updateLoginStatus(user);
 		console.log('end of onAuthState...');
 	});
 });
@@ -311,5 +313,28 @@ function filterParts() {
 			console.log("model diff");
 			parts.item(i).style.display = "none";
 		}
+	}
+	updateItemCount();
+}
+
+function updateItemCount() {
+	var parts = document.getElementsByClassName("catalog-part");
+	var visibleCount = 0;
+	for (var i = 0; i < parts.length; i++) {
+		if (parts.item(i).style.display !== "none") {
+			visibleCount++;
+		}
+	}
+	document.getElementById("item-count-number").textContent = visibleCount;
+}
+
+function updateLoginStatus(user) {
+	var statusText = document.getElementById("login-status-text");
+	if (user) {
+		statusText.textContent = "Logged in as " + user.email;
+		statusText.style.color = "#28a745";
+	} else {
+		statusText.textContent = "Not logged in";
+		statusText.style.color = "#dc3545";
 	}
 }
