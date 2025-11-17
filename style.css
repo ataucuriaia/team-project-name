@@ -452,7 +452,7 @@ grid-area: 3 / 1 / 4 / 2;
   border-top: 1px solid #dee2e6;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
   flex-shrink: 0;
   max-height: 180px;
   overflow-y: auto;
@@ -460,7 +460,7 @@ grid-area: 3 / 1 / 4 / 2;
 }
 
 .faq-question {
-  padding: 10px 12px;
+  padding: 8px 12px;
   background-color: #f8f9fa;
   border: 1px solid #dee2e6;
   border-radius: 4px;
